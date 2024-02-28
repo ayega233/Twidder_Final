@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Twidder</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/client.css') }}">
+        <script src="{{url_for('static', filename='javascripts/serverstub.js')}}"></script>
+        <script src="{{url_for('static', filename='javascripts/client.js')}}"></script>
+        <script type=”text/view” id="welcomeview">
+            <div id="welcome-view">
+                <div id="main-left">
+                </div>
+                <div id="right-top">
+                    <form action="" id="save-form" onsubmit="login(this); return false;" method="Post">
+                        <div><label for="login_email">Email</label><input type="email" id="login_email" name="email" value="a@gmail.com" autocomplete="off" required></div>
+                        <div><label for="login_password">Password</label><input type="password" id="login_password" value="12345" name="password" required minlength="5"></div>
+                        <input class="button" type="submit" value="Login" id="login_submit">
+                        <span id='log-error-message'></span>
+                    </form>  
+                </div>
+                <div id="right-dow">
+                    <h3 class="sign-up"> Sign up here</h3>
+                    <form action="#" onsubmit="saveContact(this);return false" id="sign-up-form">
+                        <div><label for="firstname">First Name</label><input type="text" id="firstname" required></div>
+                        <div><label for="familyname">Family Name</label><input type="text" id="familyname" required></div>
+                        <div><label for="gender">Gender</label>
+                            <select id="gender" name="gender" required>
+                                <option value="">Select A Value</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                             </select>
+                        </div>
+                        <div><label for="city">City</label><input type="text" id="city" required></div>
+                        <div><label for="country">Country</label><input type="text" id="country" autocomplete="off" required></div>
+                        <div><label for="emailsignup">Email</label><input type="email" id="emailsignup" required></div>
+                        <div><label for="passwordsignup">Password</label><input type="password" id="passwordsignup" required minlength="5"></div>
+                        <div><label for="repasswordsignup">Repeat PSW</label><input type="password" id="repasswordsignup" onkeyup="checkpw('passwordsignup','repasswordsignup','message','signup')" required minlength="5"></div>
+                        <div><input type="submit" id="signup" name="signup" value="SignUp" class="button" disabled/></div> 
+                        <span id='message'></span>
+                    </form>
+                    
+                </div>
+            </div>
+        </script>
+        <script type="text/view" id="logged_in">
+            <div class="tabs">
+            <div id="profilepic">
+                <img src="{{url_for('static', filename='images/user.png')}}" alt="Profile Photo" width="128" height="128">
+            </div>
+
+            <div class="button_container">
+                <button id="tabs1" onclick="display_tab(this)" class="tab_button">Home</button>
+                <button id="tabs2" onclick="display_tab(this)" class="tab_button">Account</button>
+                <button id="tabs3" onclick="display_tab(this)" class="tab_button">Browse</button>
+                <button id="signout_button"  onclick="signOut()" class="tab_button">Sign out</button>
+            </div>
+
+            <div id="tabs-1" class="tab_panel">
+                <div id="personal_info" >
+                    <h3>Personal Information</h3>
+                    <span id="personal-error-msg"></span>
+                    <p><b>Email:</b></p><p id="email_output"></p>
+                    <p><b>Name:</b></p><p id="name_output"></p>
+                    <p><b>Familyame:</b></p><p id="familyname_output"></p>
+                    <p><b>Gender:</b></p><p id="gender_output"></p>
+                    <p><b>City:</b></p><p id="city_output"></p>
+                    <p><b>Country:</b></p><p id="country_output"></p>
+
+                </div>
+                <div id="wall">
+                    <div id="write_wall">
+                        <h3>What's on your mind?</h3>
+                        <form id="wall_form" onsubmit = "return false">
+                            <input type="text" id="wall_thoughts">
+                            <span id="wall-post-error-1"></span>
+                            <button id="post_wall" onclick="post_to_wall(true)">Post</button>
+                        </form>
+
+                    </div>
+                <div id="read_wall">
+                    <h3>Wall</h3>
+                    <p id="theTextarea"></p>
+                    <button id="refresh_wall" onclick="read_wall()">Refresh</button>
+                </div>
+                </div>
+            </div>
+
+            <div id="tabs-2" class="tab_panel">
+                <h3 id="chg_psw_head">Change Password</h3><br />
+                <form id="form_psw" onsubmit = "return false">
+                    Old password:<input type="password" id="change_old_psw" required><br><br>
+                    New password:<input type="password" id="change_new_psw" required><br><br />
+                    Repeat New password:<input type="password" id="repeat_new_psw" required onkeyup="checkpw('change_new_psw','repeat_new_psw','span_test_4','change_psw_button')"><br><br />
+                    <span id="span_test_4"></span>
+                    <button class="button" type="submit" id="change_psw_button" onclick="changing_password()" disabled>Submit</button><br/>
+                </form>
+
+            </div>
+
+            <div id="tabs-3" class="tab_panel">
+                <div id="search">
+                    <form id="search_form" onsubmit="return false">
+                        <input type="text" id="search_member" placeholder="Search Twidder"><br><br>
+                        <span id="search-error"></span>
+                        <button type="submit" id="search_button" onclick="user_data_2()">Search</button><br />
+                    </form>
+                </div>
+                <div id="result">
+                    <div id="personal_info_2" >
+                        <h3>Personal Information</h3>
+                        <p><b>Email:</b></p><p id="email_output_2"></p><br>
+                        <p><b>Name:</b></p><p id="name_output_2"></p><br>
+                        <p><b>Familyame:</b></p><p id="familyname_output_2"></p><br>
+                        <p><b>Gender:</b></p><p id="gender_output_2"></p><br>
+                        <p><b>City:</b></p><p id="city_output_2"></p><br>
+                        <p><b>Country:</b></p><p id="country_output_2"></p><br>
+
+                    </div>
+                    <div id="wall_2">
+                        <div id="write_wall_2">
+                            <h3>Write something to your friend</h3>
+                            <form id="wall_form_2" onsubmit = "return false">
+                                <input type="text" id="wall_thoughts_2">
+                                <span id="wall-post-error"></span>
+                                <button id="post_wall_2" onclick="post_to_wall_2()">Post</button>
+                            </form>
+
+                        </div>
+                        <div id="read_wall_2">
+                            <h3>Wall</h3>
+                            <p id="theTextarea_2"></p>
+                            <button id="refresh_wall_2" onclick="read_wall_2()">Refresh</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        </script>
+    </head>
+    <body style="margin: auto; margin-top: 100px;">
+        <div  id="content"></div>
+
+    </body>
+</html>
