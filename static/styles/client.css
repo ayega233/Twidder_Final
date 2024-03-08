@@ -131,7 +131,7 @@ form div {
 }
 
 .tabs .button_container .tab_button {
-  width: 25%;
+  width: 20%;
   height: 100%;
   float: left;
   cursor: pointer;
@@ -314,4 +314,19 @@ select {
 .activeBtn {
   background-color: #d7d4d4;
   border: revert;
+}
+
+#noof_prof_views{
+  background-color: aliceblue;
+  width: 45%;
+  /* margin-top: 109px; */
+  height: 340px;
+}
+
+#noof_prof_views2{
+  background-color: aliceblue;
+  width: 49%;
+  float: inline-end;
+  height: 340px;
+  margin-top: -338px;
 }

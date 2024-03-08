@@ -3,8 +3,8 @@
     <head>
         <title>Twidder</title>
         <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/client.css') }}">
-        <script src="{{url_for('static', filename='javascripts/serverstub.js')}}"></script>
         <script src="{{url_for('static', filename='javascripts/client.js')}}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script type=”text/view” id="welcomeview">
             <div id="welcome-view">
                 <div id="main-left">
@@ -44,98 +44,113 @@
         </script>
         <script type="text/view" id="logged_in">
             <div class="tabs">
-            <div id="profilepic">
-                <img src="{{url_for('static', filename='images/user.png')}}" alt="Profile Photo" width="128" height="128">
-            </div>
-
-            <div class="button_container">
-                <button id="tabs1" onclick="display_tab(this)" class="tab_button">Home</button>
-                <button id="tabs2" onclick="display_tab(this)" class="tab_button">Account</button>
-                <button id="tabs3" onclick="display_tab(this)" class="tab_button">Browse</button>
-                <button id="signout_button"  onclick="signOut()" class="tab_button">Sign out</button>
-            </div>
-
-            <div id="tabs-1" class="tab_panel">
-                <div id="personal_info" >
-                    <h3>Personal Information</h3>
-                    <span id="personal-error-msg"></span>
-                    <p><b>Email:</b></p><p id="email_output"></p>
-                    <p><b>Name:</b></p><p id="name_output"></p>
-                    <p><b>Familyame:</b></p><p id="familyname_output"></p>
-                    <p><b>Gender:</b></p><p id="gender_output"></p>
-                    <p><b>City:</b></p><p id="city_output"></p>
-                    <p><b>Country:</b></p><p id="country_output"></p>
+                <div id="profilepic">
+                    <img src="{{url_for('static', filename='images/user.png')}}" alt="Profile Photo" width="128" height="128">
+                    <!-- <span id="online_users" style="margin-left: 40px;padding: 10px;font-style: oblique;color: darkgreen;
+                    font-size: larger;">Online Users : 0</span> -->
+                    <marquee id="online_users" behavior="scroll" direction="right">Online Users : 0<</marquee>
 
                 </div>
-                <div id="wall">
-                    <div id="write_wall">
-                        <h3>What's on your mind?</h3>
-                        <form id="wall_form" onsubmit = "return false">
-                            <input type="text" id="wall_thoughts">
-                            <span id="wall-post-error-1"></span>
-                            <button id="post_wall" onclick="post_to_wall(true)">Post</button>
-                        </form>
 
-                    </div>
-                <div id="read_wall">
-                    <h3>Wall</h3>
-                    <p id="theTextarea"></p>
-                    <button id="refresh_wall" onclick="read_wall()">Refresh</button>
+                <div class="button_container">
+                    <button id="tabs1" onclick="display_tab(this)" class="tab_button">Home</button>
+                    <button id="tabs2" onclick="display_tab(this)" class="tab_button">Account</button>
+                    <button id="tabs3" onclick="display_tab(this)" class="tab_button">Browse</button>
+                    <button id="tabs4" onclick="display_tab(this)" class="tab_button">Profile Summery</button>
+                    <button id="signout_button"  onclick="signOut()" class="tab_button">Sign out</button>
                 </div>
-                </div>
-            </div>
 
-            <div id="tabs-2" class="tab_panel">
-                <h3 id="chg_psw_head">Change Password</h3><br />
-                <form id="form_psw" onsubmit = "return false">
-                    Old password:<input type="password" id="change_old_psw" required><br><br>
-                    New password:<input type="password" id="change_new_psw" required><br><br />
-                    Repeat New password:<input type="password" id="repeat_new_psw" required onkeyup="checkpw('change_new_psw','repeat_new_psw','span_test_4','change_psw_button')"><br><br />
-                    <span id="span_test_4"></span>
-                    <button class="button" type="submit" id="change_psw_button" onclick="changing_password()" disabled>Submit</button><br/>
-                </form>
-
-            </div>
-
-            <div id="tabs-3" class="tab_panel">
-                <div id="search">
-                    <form id="search_form" onsubmit="return false">
-                        <input type="text" id="search_member" placeholder="Search Twidder"><br><br>
-                        <span id="search-error"></span>
-                        <button type="submit" id="search_button" onclick="user_data_2()">Search</button><br />
-                    </form>
-                </div>
-                <div id="result">
-                    <div id="personal_info_2" >
+                <div id="tabs-1" class="tab_panel">
+                    <div id="personal_info" >
                         <h3>Personal Information</h3>
-                        <p><b>Email:</b></p><p id="email_output_2"></p><br>
-                        <p><b>Name:</b></p><p id="name_output_2"></p><br>
-                        <p><b>Familyame:</b></p><p id="familyname_output_2"></p><br>
-                        <p><b>Gender:</b></p><p id="gender_output_2"></p><br>
-                        <p><b>City:</b></p><p id="city_output_2"></p><br>
-                        <p><b>Country:</b></p><p id="country_output_2"></p><br>
+                        <span id="personal-error-msg"></span>
+                        <p><b>Email:</b></p><p id="email_output"></p>
+                        <p><b>Name:</b></p><p id="name_output"></p>
+                        <p><b>Familyame:</b></p><p id="familyname_output"></p>
+                        <p><b>Gender:</b></p><p id="gender_output"></p>
+                        <p><b>City:</b></p><p id="city_output"></p>
+                        <p><b>Country:</b></p><p id="country_output"></p>
 
                     </div>
-                    <div id="wall_2">
-                        <div id="write_wall_2">
-                            <h3>Write something to your friend</h3>
-                            <form id="wall_form_2" onsubmit = "return false">
-                                <input type="text" id="wall_thoughts_2">
-                                <span id="wall-post-error"></span>
-                                <button id="post_wall_2" onclick="post_to_wall_2()">Post</button>
+                    <div id="wall">
+                        <div id="write_wall">
+                            <h3>What's on your mind?</h3>
+                            <form id="wall_form" onsubmit = "return false">
+                                <input type="text" id="wall_thoughts">
+                                <span id="wall-post-error-1"></span>
+                                <button id="post_wall" onclick="post_to_wall(true)">Post</button>
                             </form>
 
                         </div>
-                        <div id="read_wall_2">
+                        <div id="read_wall">
                             <h3>Wall</h3>
-                            <p id="theTextarea_2"></p>
-                            <button id="refresh_wall_2" onclick="read_wall_2()">Refresh</button>
+                            <p id="theTextarea"></p>
+                            <button id="refresh_wall" onclick="read_wall()">Refresh</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tabs-2" class="tab_panel">
+                    <h3 id="chg_psw_head">Change Password</h3><br />
+                    <form id="form_psw" onsubmit = "return false">
+                        Old password:<input type="password" id="change_old_psw" required><br><br>
+                        New password:<input type="password" id="change_new_psw" required><br><br />
+                        Repeat New password:<input type="password" id="repeat_new_psw" required onkeyup="checkpw('change_new_psw','repeat_new_psw','span_test_4','change_psw_button')"><br><br />
+                        <span id="span_test_4"></span>
+                        <button class="button" type="submit" id="change_psw_button" onclick="changing_password()" disabled>Submit</button><br/>
+                    </form>
+
+                </div>
+
+                <div id="tabs-3" class="tab_panel">
+                    <div id="search">
+                        <form id="search_form" onsubmit="return false">
+                            <input type="text" id="search_member" placeholder="Search Twidder"><br><br>
+                            <span id="search-error"></span>
+                            <button type="submit" id="search_button" onclick="user_data_2()">Search</button><br />
+                        </form>
+                    </div>
+                    <div id="result">
+                        <div id="personal_info_2" >
+                            <h3>Personal Information</h3>
+                            <p><b>Email:</b></p><p id="email_output_2"></p><br>
+                            <p><b>Name:</b></p><p id="name_output_2"></p><br>
+                            <p><b>Familyame:</b></p><p id="familyname_output_2"></p><br>
+                            <p><b>Gender:</b></p><p id="gender_output_2"></p><br>
+                            <p><b>City:</b></p><p id="city_output_2"></p><br>
+                            <p><b>Country:</b></p><p id="country_output_2"></p><br>
+
+                        </div>
+                        <div id="wall_2">
+                            <div id="write_wall_2">
+                                <h3>Write something to your friend</h3>
+                                <form id="wall_form_2" onsubmit = "return false">
+                                    <input type="text" id="wall_thoughts_2">
+                                    <span id="wall-post-error"></span>
+                                    <button id="post_wall_2" onclick="post_to_wall_2()">Post</button>
+                                </form>
+
+                            </div>
+                            <div id="read_wall_2">
+                                <h3>Wall</h3>
+                                <p id="theTextarea_2"></p>
+                                <button id="refresh_wall_2" onclick="read_wall_2()">Refresh</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tabs-4" class="tab_panel">
+                    <h4 style="font-size: larger; margin-top: 65px;">Twidder Profile Analysize Dashbord</h4>
+                    <div width="50%" id="noof_prof_views">
+                        <canvas id="myChart"></canvas>
+                    </div>
+                    <div width="50%">
+                        <div id="noof_prof_views2">
+                            <canvas id="myChart2"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
-
-        </div>
         </script>
     </head>
     <body style="margin: auto; margin-top: 100px;">

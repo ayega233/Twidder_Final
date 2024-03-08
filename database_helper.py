@@ -1,5 +1,6 @@
 import sqlite3
 from flask import g
+import datetime
 
 DATABASE_URI = 'database.db'
 
@@ -123,3 +124,32 @@ def post_message(email, writer, content):
         print(er)
         return False
 
+
+def addviews(email):
+    try:
+        today=datetime.datetime.now()
+        result = get_db().execute("SELECT totalviews FROM profileviews WHERE username = '"+email+"' AND date(date) = CURRENT_DATE")
+        row=result.fetchall()
+        # print(row[0][0])
+        views = 1 if len(row)<1 else row[0][0]
+        get_db().execute("REPLACE into profileviews values(?,?,?);", [email,today, views+1])
+        get_db().commit()
+    except sqlite3.Error as er:
+        print(er)
+        
+
+def get_views_byemail(email):
+    cursor = get_db().execute('select * from profileviews where username like ?', [email])
+    rows = cursor.fetchall()
+    cursor.close()
+    result = []
+    for index in range(len(rows)):
+        result.append({'email': rows[index][0], 'date': rows[index][1], 'views': rows[index][2]})
+    return result
+
+def get_numberof_onlineusers():
+    cursor = get_db().execute('SELECT COUNT(*) FROM loggedinusers')
+    data=cursor.fetchall()
+    # cursor.close()
+    print(data)
+    return data

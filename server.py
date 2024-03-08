@@ -32,7 +32,6 @@ def check_login(sock):
             sock.send(data)
 
 
-
 def randomToken(stringLength):
     lettersAndDigits = string.ascii_letters + string.digits
     return ''.join(random.choice(lettersAndDigits) for i in range(stringLength))
@@ -86,6 +85,14 @@ def sign_in():
                     #return jsonify({"success": "false", "message": "Already loggedin.!"}), 200
 
             result = database_helper.sign_in(contact["email"], token)
+            for client in clients:
+                wb_socket1=clients.get(client)
+                wb_socket1.send("1")
+                # try:
+                #     wb_socket1.close() 
+                # except RuntimeError as err:
+                #     print("Connection is Closed",err) 
+
             print("After Login",result)
             if (result):                   
                 return jsonify({"success": "true", "message": "Successfully signed in.", "data": token}), 200
@@ -132,6 +139,9 @@ def sign_out():
     if token and database_helper.check_token(token):
         result = database_helper.sign_out(token)
         if result == True:
+            for client in clients:
+                wb_socket=clients.get(client)
+                wb_socket.send("0")
             return jsonify({"success": "true","message":"Successfully signed out."}), 200
         else:
             return jsonify({"success": "false", "message": "servererror"}), 500
@@ -219,6 +229,7 @@ def get_user_messages_by_email(email):
     token = request.headers.get('Authorization')
     if token and database_helper.check_token(token):
         result = database_helper.get_user_messages_by_email(email)
+        database_helper.addviews(email)
         if (len(result)>0):
             return jsonify({"success": "true", "message": "User messages retrieved.", "data": result}), 200
         elif (len(result)==0):
@@ -258,7 +269,31 @@ def post_message():
     else:
         return jsonify({"success": "false", "message": ""}), 401
     
-
+@app.route('/get_profile_views',methods=['GET'])
+def get_profile_views():
+    token = request.headers.get('Authorization')
+    if token and token is not None and database_helper.check_token(token):
+        email=database_helper.get_email_from_token(token)
+        result = database_helper.get_views_byemail(email) 
+        if result:
+            return jsonify({"success": "true", "message": "Message sent.", "data": result}), 200
+        else:
+            return jsonify({"success": "false", "message": "Something went wrong!"}), 500
+    else:
+        return jsonify({"success": "false", "message": ""}), 401
+    
+@app.route('/get_online_users',methods=['GET'])
+def get_online_users():
+    token = request.headers.get('Authorization')
+    if token and token is not None and database_helper.check_token(token):
+        result=database_helper.get_numberof_onlineusers() 
+        print(result)
+        if result:
+            return jsonify({"success": "true", "message": "Message sent.", "data": result}), 200
+        else:
+            return jsonify({"success": "false", "message": "Something went wrong!"}), 500
+    else:
+        return jsonify({"success": "false", "message": ""}), 401
  
 if __name__ == '__main__':
     app.run()

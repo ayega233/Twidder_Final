@@ -1,5 +1,6 @@
 
 var exampleSocket;
+var liveuserSocket;
 displayView = function(){
 	//  if (localStorage.getItem("loggedinusers") == null || localStorage.getItem("loggedinusers") == "") {
 	//  	document.getElementById('content').innerHTML = document.getElementById('welcomeview').innerHTML;
@@ -53,13 +54,14 @@ function login(formdata){
         set_user_data();
         read_wall();
         makeWebSocket(email);
-        
+
       }else{
         popupErrorMsg(this.status,res_data.message)
       }
     }
     };
 }
+
 
 function makeWebSocket(email){
   if (exampleSocket && exampleSocket.connected){
@@ -73,6 +75,17 @@ function makeWebSocket(email){
     exampleSocket.onmessage = (event) => {
       console.log("Listening...");
       console.log(event.data);
+      if(document.getElementById('online_users')!=null){
+        if(event.data == 1){
+          c = localStorage.getItem("livecount");
+          livecount=++c;
+          document.getElementById('online_users').innerHTML = 'Online Users :'+livecount;
+        }else{
+          c = localStorage.getItem("livecount");
+          livecount=--c;
+          document.getElementById('online_users').innerHTML = 'Online Users :'+livecount;
+        }
+      }
     };
     exampleSocket.onclose = (event) => {
       console.log("Closing...");
@@ -160,7 +173,7 @@ var already_login = function() {
         if (userdata && userdata.email != null) {
           makeWebSocket(userdata.email);
           document.getElementById('content').innerHTML = document.getElementById('logged_in').innerHTML;
-          //showCurrentTab();
+          showCurrentTab();
           var currenttab = localStorage.getItem("currentTab");
           if(currenttab && currenttab != null && document.getElementById(currenttab)!= null){
             display_tab(document.getElementById(currenttab));
@@ -184,6 +197,7 @@ var already_login = function() {
 }
 
 var display_tab = function(element)  {
+  getNumberofOnlineUsers();
   var tab_panels = document.getElementsByClassName('tab_panel');
   for (var i = 0; i < tab_panels.length; i++) {
       tab_panels[i].style.display = 'none';
@@ -191,11 +205,27 @@ var display_tab = function(element)  {
         document.getElementById("tabs"+(i+1)).classList.remove("activeBtn");
       } 
   }
+
+  var currenttab=localStorage.getItem("currentTab");
+  if(currenttab == "tabs4"){
+    Chart.helpers.each(Chart.instances, function(instance){
+      instance.destroy();
+    });
+  }
+
   if(document.getElementById(element.id)){
     document.getElementById(element.id).classList.add("activeBtn");
+    if(element.id == "tabs4" || element.id == "tabs-4"){
+      getViews();
+      getMessageCount();
+    }
   }
   
-  var tabContentIdToShow = element.id.replace(/(\d)/g, '-$1');
+  if(element.id.includes("-")){
+    var tabContentIdToShow = element.id;
+  }else{
+    var tabContentIdToShow = element.id.replace(/(\d)/g, '-$1');
+  }
   localStorage.setItem("currentTab",element.id);
   document.getElementById(tabContentIdToShow).style.display = 'block';
 }
@@ -273,6 +303,8 @@ var signOut = function() {
     var res_data =JSON.parse(this.response);
     if (this.readyState == 4 ) {
       if (res_data.success=="true" && this.status == 200) {
+        c= localStorage.getItem("livecount");
+        localStorage.setItem("livecount",--c);
         document.getElementById('content').innerHTML = document.getElementById('welcomeview').innerHTML;
       }else{
         popupErrorMsg(this.status,res_data.message)
@@ -536,4 +568,171 @@ function popupErrorMsg(status,message){
       alert("Incorrect message id! The message may have been deleted!");
     }
     
+}
+
+function getViews(){
+  token =  localStorage.getItem("loginusertocken");
+  var req = new XMLHttpRequest();
+  var url = "/get_profile_views";
+  req.open("GET",url , true);
+  req.setRequestHeader("Content-type", "application/json");
+  req.setRequestHeader("Authorization", token);
+  req.send();
+
+  req.onload = function() {
+    if (this.readyState == 4) {
+      var res_data =JSON.parse(this.response);
+      if(res_data.success == "true" && this.status == 200){
+        views=res_data.data;
+        let today=new Date();
+        let lastweekfistday=new Date(today.getDate()-6);
+        todayviews=0;
+        weekviews=0;
+        monthviews=0;
+        for(i=0;i<views.length;i++){
+          viewdate = new Date(views[i].date);
+          if(today.getDate()==viewdate.getDate()){
+            todayviews=todayviews+views[i].views;
+          }
+          if(today.getMonth()==viewdate.getMonth()){
+            monthviews=monthviews+views[i].views;
+          }
+          if(lastweekfistday.getDate() <= viewdate.getDate()){
+            weekviews=weekviews+views[i].views;
+          }
+        }
+        totalviews=[monthviews,weekviews,todayviews]
+        loadchart1(totalviews);
+      }else{
+       console.log(res_data.message)
+       return [0,0,0];
+      }
+    }else{
+      console.log(this.message)
+      // document.getElementById("personal-error-msg").innerHTML = this.message;
+      return [0,0,0];
+    }
+  }
+}
+
+function loadchart1(data){
+  const ctx = document.getElementById('myChart').getContext("2d");
+  // let data = getViews();
+  // console.log(data);
+  var mychart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['This Month', 'This Week', 'ToDay'],
+      datasets: [{
+        label: 'Number of Profile Views',
+        data: data,
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+
+function getMessageCount(){
+  token = localStorage.getItem("loginusertocken");
+  //user_output = serverstub.getUserMessagesByToken(token);
+  var req = new XMLHttpRequest();
+  var url = "/get_user_messages_by_token";
+  req.open("GET",url , true);
+  req.setRequestHeader("Content-type", "application/json");
+  req.setRequestHeader("Authorization", token);
+  req.send();
+
+  req.onload = function() {
+    var res_data =JSON.parse(this.response);
+    if (this.readyState == 4 && this.status == 200) {
+      if(res_data.success == "true"){
+        userdata=res_data.data;
+        if (userdata) {
+          // users = new Set(userdata);
+          // var messagecount = 0
+          var counts = {};
+          for (i = 0; i < userdata.length; i++) {
+            var msges = 1;
+            // if(counts.length>0){
+              for(k in counts){
+                if(userdata[i].writer == k){
+                  msges = counts[k]+msges;
+                }
+              }
+            // }
+              counts[userdata[i].writer] = msges;   
+              chart2(counts);         
+          }
+     
+        }else{
+          console.log(res_data.message);
+        }
+      }else{
+        console.log(res_data.message);
+      }
+    }
+    };
+}
+
+let chart;
+function chart2(counts){
+  const ctx2 = document.getElementById('myChart2').getContext("2d");
+  if (chart) chart.destroy();
+  chart = new Chart(ctx2, {
+    type: 'pie',
+    data: {
+      labels: Object.keys(counts),
+      datasets: [{
+        label: 'Number of Post',
+        data: Object.values(counts)
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        title: {
+          display: true,
+          text: 'Top 5 Post Summery of Wall'
+        }
+      }
+    }
+  });
+}
+
+function getNumberofOnlineUsers(){
+  token = localStorage.getItem("loginusertocken");
+  //user_output = serverstub.getUserMessagesByToken(token);
+  var req = new XMLHttpRequest();
+  var url = "/get_online_users";
+  req.open("GET",url , true);
+  req.setRequestHeader("Content-type", "application/json");
+  req.setRequestHeader("Authorization", token);
+  req.send();
+
+  req.onload = function() {
+    var res_data =JSON.parse(this.response);
+    if (this.readyState == 4 && this.status == 200) {
+      if(res_data.success == "true"){
+        localStorage.setItem("livecount",res_data.data);
+        document.getElementById('online_users').innerHTML = 'Online Users :'+res_data.data;
+      }else{
+        document.getElementById('online_users').innerHTML = 'Online Users : 0';
+        console.log(res_data.message);
+      }
+    }else{
+      document.getElementById('online_users').innerHTML = 'Online Users :0';
+      console.log(res_data.message);
+    }
+    };
 }
