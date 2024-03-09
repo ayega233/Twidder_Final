@@ -379,6 +379,7 @@ var user_data_2 = function () {
       var res_data = JSON.parse(this.response);
       if (this.readyState == 4) {
         if (res_data.success == "true" && this.status == 200) {
+          document.getElementById("fullName").innerHTML = res_data.data.firstname+" "+res_data.data.familyname;
           document.getElementById("email_output_2").innerHTML = res_data.data.email;
           document.getElementById("name_output_2").innerHTML = res_data.data.firstname;
           document.getElementById("familyname_output_2").innerHTML = res_data.data.familyname;
