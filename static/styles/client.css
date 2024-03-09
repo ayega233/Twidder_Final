@@ -1,11 +1,11 @@
 body {
-  background-color: deepskyblue;
+  background-color: #81b9e6;
 }
 
 #welcome-view {
   width: 600px;
   height: 400px;
-  background-color: deepskyblue;
+  background-color: #81b9e6;
   margin: auto;
 }
 
@@ -13,7 +13,8 @@ body {
   width: 340px;
   height: 400px;
   background-image: url("../images/wimage.png");
-  border: solid;
+  border: 2px solid black;
+  border-radius: 10px;
 }
 
 #right-top {
@@ -22,7 +23,8 @@ body {
   margin-left: 350px;
   margin-top: -404px;
   background-color: white;
-  border: solid;
+  border: 2px solid black;
+  border-radius: 10px;
   padding: 3px;
 
 }
@@ -33,7 +35,8 @@ body {
   background-color: white;
   width: 250px;
   height: 295px;
-  border: solid;
+  border: 2px solid black;
+  border-radius: 10px;
   padding: 3px;
 }
 
@@ -73,7 +76,7 @@ form div {
 }
 
 .userProfile{
-  width: 30%;
+  width: 45%;
   padding: 15px;
 }
 
@@ -83,14 +86,15 @@ form div {
   margin: auto;
 }
 
-#profilepic {
-  margin: auto;
-}
-
 #profileName{
   width: 50%;
   float: left;
 }
+
+#profilepic {
+  margin: auto;
+}
+
 
 #chg_psw_head {
   width: 50%;
