@@ -87,6 +87,10 @@ form div {
   margin: auto;
 }
 
+#profileName{
+  width: 50%;
+  float: left;
+}
 
 #chg_psw_head {
   width: 50%;
