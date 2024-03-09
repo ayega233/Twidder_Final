@@ -1,6 +1,6 @@
 import sqlite3
 from flask import g
-import datetime
+from datetime import datetime, time
 
 DATABASE_URI = 'database.db'
 
@@ -127,12 +127,18 @@ def post_message(email, writer, content):
 
 def addviews(email):
     try:
-        today=datetime.datetime.now()
-        result = get_db().execute("SELECT totalviews FROM profileviews WHERE username = '"+email+"' AND date(date) = CURRENT_DATE")
+        start_of_day = datetime.now().strftime("%Y-%m-%d")
+        # datetime.combine(datetime.now(), time.min)
+        # end_of_day = datetime.combine(datetime.now(), time.max)
+        # result = get_db().execute("SELECT totalviews FROM profileviews WHERE username = ? AND date between ? and ?",[email,start_of_day,end_of_day])
+        result = get_db().execute("SELECT totalviews FROM profileviews WHERE username = ? AND date = ?",[email,start_of_day])
         row=result.fetchall()
         # print(row[0][0])
         views = 1 if len(row)<1 else row[0][0]
-        get_db().execute("REPLACE into profileviews values(?,?,?);", [email,today, views+1])
+        if len(row)<1 :
+            get_db().execute("insert into profileviews values(?,?,?)",[email,start_of_day,views])
+        else:
+            get_db().execute("UPDATE profileviews set totalviews = ? where username= ? and date= ?;", [views+1,email,start_of_day])
         get_db().commit()
     except sqlite3.Error as er:
         print(er)

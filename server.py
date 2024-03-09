@@ -87,11 +87,8 @@ def sign_in():
             result = database_helper.sign_in(contact["email"], token)
             for client in clients:
                 wb_socket1=clients.get(client)
-                wb_socket1.send("1")
-                # try:
-                #     wb_socket1.close() 
-                # except RuntimeError as err:
-                #     print("Connection is Closed",err) 
+                if wb_socket1 is not None:
+                    wb_socket1.send("1")
 
             print("After Login",result)
             if (result):                   
@@ -140,8 +137,9 @@ def sign_out():
         result = database_helper.sign_out(token)
         if result == True:
             for client in clients:
-                wb_socket=clients.get(client)
-                wb_socket.send("0")
+                wb_socketso=clients.get(client)
+                if wb_socketso is not None:
+                    wb_socketso.send("0")
             return jsonify({"success": "true","message":"Successfully signed out."}), 200
         else:
             return jsonify({"success": "false", "message": "servererror"}), 500
@@ -193,7 +191,11 @@ def get_user_data_by_email(email):
     token = request.headers.get('Authorization')
     if token and database_helper.check_token(token):
         if(email is not None and email_validation(email)):
+            database_helper.addviews(email)
             result = database_helper.get_user_data_by_email(email)
+            if email in clients:
+                websockserch=clients[email]
+                websockserch.send("searched")
             if (len(result)>0):
                 return jsonify({"success": "true", "message": "User data retrieved.", "data": result[0]}), 200
             elif (len(result)==0):
@@ -229,7 +231,6 @@ def get_user_messages_by_email(email):
     token = request.headers.get('Authorization')
     if token and database_helper.check_token(token):
         result = database_helper.get_user_messages_by_email(email)
-        database_helper.addviews(email)
         if (len(result)>0):
             return jsonify({"success": "true", "message": "User messages retrieved.", "data": result}), 200
         elif (len(result)==0):
@@ -238,6 +239,7 @@ def get_user_messages_by_email(email):
             return jsonify({"success": "false", "message": "Something went wrong!"}), 500
     else:
         return jsonify({"success": "false", "message": ""}), 401
+    
 
 @app.route('/post_message', methods=['POST'])
 def post_message():
@@ -255,6 +257,9 @@ def post_message():
                 if('message' in data and data['message'] is not None and len(data['message'])>0):
                     result = database_helper.post_message(toemail, writer, data['message'])
                     if result:
+                        if toemail in clients:
+                            websockpost = clients[toemail]
+                            websockpost.send("wallpost")
                         return jsonify({"success": "true", "message": "Message sent.", "data": result}), 200
                     else:
                         return jsonify({"success": "false", "message": "Something went wrong!"}), 500
