@@ -72,6 +72,17 @@ form div {
   -webkit-text-stroke-width: medium;
 }
 
+.userProfile{
+  width: 30%;
+  padding: 15px;
+}
+
+#userpic{
+  float: left;
+  width: 50%;
+  margin: auto;
+}
+
 #profilepic {
   margin: auto;
 }
@@ -128,6 +139,7 @@ form div {
 
 .tabs .button_container {
   height: 8%;
+  clear: both;
 }
 
 .tabs .button_container .tab_button {

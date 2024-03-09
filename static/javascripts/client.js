@@ -343,6 +343,7 @@ var set_user_data = function () {
         userdata = res_data.data;
         if (document.getElementById("personal-error-msg"))
           document.getElementById("personal-error-msg").innerHTML = "";
+        document.getElementById("fullName").innerHTML = userdata.firstname+" "+userdata.familyname;
         document.getElementById("email_output").innerHTML = userdata.email;
         document.getElementById("name_output").innerHTML = userdata.firstname;
         document.getElementById("familyname_output").innerHTML = userdata.familyname;

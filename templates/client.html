@@ -43,9 +43,16 @@
             </div>
         </script>
         <script type="text/view" id="logged_in">
+            <div class="userProfile">
+                <div id="userpic">
+                    <img src="{{url_for('static', filename='images/user.png')}}" alt="Profile Photo" width="128" height="128">
+                </div>
+                <div id="profileName">
+                    <h2 id="fullName"></h2>
+                </div>
+            </div>
             <div class="tabs">
                 <div id="profilepic">
-                    <img src="{{url_for('static', filename='images/user.png')}}" alt="Profile Photo" width="128" height="128">
                     <!-- <span id="online_users" style="margin-left: 40px;padding: 10px;font-style: oblique;color: darkgreen;
                     font-size: larger;">Online Users : 0</span> -->
                     <marquee id="online_users" behavior="scroll" direction="right">Online Users : 0<</marquee>
