@@ -23,7 +23,7 @@ font-family: "Lucida Sans", sans-serif;
 }
 
 #welcome-view {
-  width: 600px;
+  width: 370px;
   height: 400px;
   background-color: #81b9e6;
   display: block;
@@ -34,7 +34,7 @@ font-family: "Lucida Sans", sans-serif;
 #main-left {
   width: 300px;
   height: 110px;
-  margin-left: 80px;
+  margin-left: 0px;
   margin-top: 100px;
   background-image: url("../images/wimage2.png");
   border: 2px solid black;
@@ -44,7 +44,7 @@ font-family: "Lucida Sans", sans-serif;
 #right-top {
   width: 300px;
   height: 90px;
-  margin-left: 80px;
+  margin-left: 0px;
   margin-top: -317px;
   background-color: white;
   border: 2px solid black;
@@ -54,7 +54,7 @@ font-family: "Lucida Sans", sans-serif;
 }
 
 #right-dow {
-  margin-left: 80px;
+  margin-left: 0px;
   margin-top: 5px;
   background-color: white;
   width: 300px;
@@ -396,7 +396,7 @@ select {
   width: 100%;
 }
 
-@media only screen and (min-width: 601px) {
+@media only screen and (min-width: 600px) {
   /* For mini tablets: */
   .col-s-1 {width: 8.33%;}
   .col-s-2 {width: 16.66%;}
@@ -411,6 +411,38 @@ select {
   .col-s-11 {width: 91.66%;}
   .col-s-12 {width: 100%;}
 
+  #main-left {
+    width: 300px;
+    height: 110px;
+    margin-left: 0px;
+    margin-top: 100px;
+    background-image: url("../images/wimage2.png");
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+#right-top {
+    width: 300px;
+    height: 90px;
+    margin-left: 80px;
+    margin-top: -315px;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 10px;
+    padding: 3px;
+  
+}
+  
+#right-dow {
+    margin-left: 80px;
+    margin-top: 5px;
+    background-color: white;
+    width: 300px;
+    height: 305px;
+    border: 2px solid black;
+    border-radius: 10px;
+    padding: 3px;
+}
   .userProfile{
     width: 100%;
     padding: 15px;
@@ -482,8 +514,8 @@ select {
   #main-left {
     width: 340px;
     height: 400px;
-    margin-left: 0px;
-    margin-top: 100px;
+    margin-left: -80px;
+    margin-top: 200px;
     background-image: url("../images/wimage.png");
     border: 2px solid black;
     border-radius: 10px;
@@ -492,8 +524,8 @@ select {
 #right-top {
     width: 250px;
     height: 90px;
-    margin-left: 140px;
-    margin-top: 100px;
+    margin-left: 65px;
+    margin-top: 200px;
     background-color: white;
     border: 2px solid black;
     border-radius: 10px;
@@ -502,7 +534,7 @@ select {
 }
   
 #right-dow {
-    margin-left: 140px;
+    margin-left: 65px;
     margin-top: 5px;
     background-color: white;
     width: 250px;
@@ -585,7 +617,7 @@ select {
       #main-left {
         width: 340px;
         height: 400px;
-        margin-left: -10px;
+        margin-left: -35px;
         margin-top: 100px;
         background-image: url("../images/wimage.png");
         border: 2px solid black;
@@ -595,7 +627,7 @@ select {
     #right-top {
         width: 250px;
         height: 90px;
-        margin-left: 75px;
+        margin-left: 40px;
         margin-top: 100px;
         background-color: white;
         border: 2px solid black;
@@ -605,7 +637,7 @@ select {
     }
       
     #right-dow {
-        margin-left: 75px;
+        margin-left: 40px;
         margin-top: 5px;
         background-color: white;
         width: 250px;
@@ -774,7 +806,7 @@ select {
   #right-top {
       width: 250px;
       height: 90px;
-      margin-left: -10px;
+      margin-left: -30px;
       margin-top: 100px;
       background-color: white;
       border: 2px solid black;
@@ -784,7 +816,7 @@ select {
   }
     
   #right-dow {
-      margin-left: -10px;
+      margin-left: -30px;
       margin-top: 5px;
       background-color: white;
       width: 250px;
