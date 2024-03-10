@@ -2,26 +2,50 @@ body {
   background-color: #81b9e6;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+[class*="col-"] {
+  float: left;
+  padding: 15px;
+  border: 1px solid red;
+}
+
+html {
+font-family: "Lucida Sans", sans-serif;
+}
+
 #welcome-view {
   width: 600px;
   height: 400px;
   background-color: #81b9e6;
+  display: block;
+  align-content: center;
   margin: auto;
 }
 
 #main-left {
-  width: 340px;
-  height: 400px;
-  background-image: url("../images/wimage.png");
+  width: 300px;
+  height: 110px;
+  margin-left: 80px;
+  margin-top: 100px;
+  background-image: url("../images/wimage2.png");
   border: 2px solid black;
   border-radius: 10px;
 }
 
 #right-top {
-  width: 250px;
-  height: 80px;
-  margin-left: 350px;
-  margin-top: -404px;
+  width: 300px;
+  height: 90px;
+  margin-left: 80px;
+  margin-top: -317px;
   background-color: white;
   border: 2px solid black;
   border-radius: 10px;
@@ -30,19 +54,19 @@ body {
 }
 
 #right-dow {
-  margin-left: 350px;
+  margin-left: 80px;
   margin-top: 5px;
   background-color: white;
-  width: 250px;
-  height: 295px;
+  width: 300px;
+  height: 305px;
   border: 2px solid black;
   border-radius: 10px;
   padding: 3px;
 }
-
 #right-dow label {
-  display: inline-block;
   width: 88px;
+  margin-bottom: -20px;
+  font-size: 13px;
 }
 
 #right-dow input {
@@ -51,6 +75,7 @@ body {
 
 #right-top label {
   width: 75px;
+  margin-bottom: -20px;
 }
 
 #right-top form {
@@ -76,19 +101,22 @@ form div {
 }
 
 .userProfile{
-  width: 45%;
+  width: 100%;
   padding: 15px;
+  margin-left: 70px;
 }
 
 #userpic{
   float: left;
-  width: 50%;
-  margin: auto;
+    width: 30%;
+    margin-right: -15px;
 }
 
 #profileName{
-  width: 50%;
-  float: left;
+  width: 70%;
+    float: center;
+    margin-left: -70px;
+    margin-top: 35px;
 }
 
 #profilepic {
@@ -113,7 +141,7 @@ form div {
   float: right;
   margin-top: 5px;
   margin-bottom: 10px;
-  margin-right: 68px;
+  margin-right: 0px;
 }
 
 #search {
@@ -137,9 +165,6 @@ form div {
   width: 80.2%;
 }
 
-
-
-
 .tabs {
   width: 100%;
   height: 100%;
@@ -156,7 +181,8 @@ form div {
   float: left;
   cursor: pointer;
   padding: 10px;
-  font-size: 18px;
+  margin-bottom: 10px;
+  font-size: 10px;
 }
 
 .tabs .button_container .tab_button:hover {
@@ -188,32 +214,37 @@ form {
 }
 
 #personal_info {
-  width: 25%;
+  width: 100%;
   height: 100%;
-  float: left;
+  float: center;
   text-align: left;
+  padding: 15px;
 }
 
 #personal_info_2 {
-  width: 25%;
+  width: 100%;
   height: 100%;
   float: left;
   text-align: left;
+  margin: 15px;
 }
 
 #wall {
-  width: 75%;
+  width: 100%;
   height: 100%;
-  float: right;
+  float: left;
   text-align: left;
+  margin-top: 15px;
+  margin-left: 15px;
 
 }
 
 #wall_2 {
-  width: 72.2%;
+  width: 100%;
   height: 100%;
   float: right;
   text-align: left;
+  margin-top: 10px;
 
 }
 
@@ -256,10 +287,18 @@ form {
   width: 100%;
   float: left;
   height: 150px;
+  margin-right: 10px;
   clear: right;
 }
 
 #read_wall {
+  margin-top: 10px;
+  width: 90%;
+  height: 75%;
+}
+
+#read_wall_2 {
+  margin-top: 10px;
   width: 90%;
   height: 75%;
 }
@@ -293,7 +332,8 @@ button {
 
 select {
   float: right;
-  width: 60%;
+  width: 57%;
+  font-size: 12px;
 }
 
 
@@ -349,4 +389,458 @@ select {
   float: inline-end;
   height: 340px;
   margin-top: -338px;
+}
+
+ /* For mobile phones: */
+ [class*="col-"] {
+  width: 100%;
+}
+
+@media only screen and (min-width: 601px) {
+  /* For mini tablets: */
+  .col-s-1 {width: 8.33%;}
+  .col-s-2 {width: 16.66%;}
+  .col-s-3 {width: 25%;}
+  .col-s-4 {width: 33.33%;}
+  .col-s-5 {width: 41.66%;}
+  .col-s-6 {width: 50%;}
+  .col-s-7 {width: 58.33%;}
+  .col-s-8 {width: 66.66%;}
+  .col-s-9 {width: 75%;}
+  .col-s-10 {width: 83.33%;}
+  .col-s-11 {width: 91.66%;}
+  .col-s-12 {width: 100%;}
+
+  .userProfile{
+    width: 100%;
+    padding: 15px;
+    margin-left: 120px;
+    }
+
+    #userpic{
+      float: left;
+        width: 40%;
+        margin-right: -15px;
+    }
+    
+    #profilepic {
+      float: left;
+      width: 60%;
+      margin-right: -15px;
+      
+    }
+    
+    #profileName{
+      width: 50%;
+      float: center;
+      margin-left: -30px;
+      margin-top: 35px;
+    }
+
+    .tabs .button_container .tab_button {
+      width: 20%;
+      height: 100%;
+      float: left;
+      cursor: pointer;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+  }
+    #personal_info, #personal_info_2 {
+      width: 25%;
+      height: 100%;
+      float: left;
+      text-align: left;
+      margin-top: 15px;
+  }
+    
+  #wall {
+      width: 75%;
+      height: 100%;
+      float: right;
+      text-align: left;
+      margin-top: 15px;
+    
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  /* For desktop: */
+  .col-1 {width: 8.33%;}
+  .col-2 {width: 16.66%;}
+  .col-3 {width: 25%;}
+  .col-4 {width: 33.33%;}
+  .col-5 {width: 41.66%;}
+  .col-6 {width: 50%;}
+  .col-7 {width: 58.33%;}
+  .col-8 {width: 66.66%;}
+  .col-9 {width: 75%;}
+  .col-10 {width: 83.33%;}
+  .col-11 {width: 91.66%;}
+  .col-12 {width: 100%;}
+
+  #main-left {
+    width: 340px;
+    height: 400px;
+    margin-left: 0px;
+    margin-top: 100px;
+    background-image: url("../images/wimage.png");
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+#right-top {
+    width: 250px;
+    height: 90px;
+    margin-left: 140px;
+    margin-top: 100px;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 10px;
+    padding: 3px;
+  
+}
+  
+#right-dow {
+    margin-left: 140px;
+    margin-top: 5px;
+    background-color: white;
+    width: 250px;
+    height: 305px;
+    border: 2px solid black;
+    border-radius: 10px;
+    padding: 3px;
+}
+
+
+  .userProfile{
+    width: 100%;
+    padding: 15px;
+    margin-left: 150px;
+    }
+    
+    #userpic{
+      float: left;
+        width: 40%;
+        margin-right: -15px;
+    }
+
+    #profilepic {
+      float: left;
+      width: 40%;
+      margin-right: -15px;
+      
+    }
+    
+    #profileName{
+      width: 50%;
+      float: center;
+      margin-left: -30px;
+      margin-top: 35px;
+    }
+
+  
+    .tabs .button_container .tab_button {
+      width: 20%;
+      height: 100%;
+      float: left;
+      cursor: pointer;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+  }
+    #personal_info,#personal_info_2 {
+      width: 25%;
+      height: 100%;
+      float: left;
+      text-align: left;
+      margin-top: 15px;
+  }
+    
+  #wall, #wall_2 {
+      width: 75%;
+      height: 100%;
+      float: right;
+      text-align: left;
+      margin-top: 15px;
+    
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+      /* For desktop: */
+      .col-1 {width: 8.33%;}
+      .col-2 {width: 16.66%;}
+      .col-3 {width: 25%;}
+      .col-4 {width: 33.33%;}
+      .col-5 {width: 41.66%;}
+      .col-6 {width: 50%;}
+      .col-7 {width: 58.33%;}
+      .col-8 {width: 66.66%;}
+      .col-9 {width: 75%;}
+      .col-10 {width: 83.33%;}
+      .col-11 {width: 91.66%;}
+      .col-12 {width: 100%;}
+
+      #main-left {
+        width: 340px;
+        height: 400px;
+        margin-left: -10px;
+        margin-top: 100px;
+        background-image: url("../images/wimage.png");
+        border: 2px solid black;
+        border-radius: 10px;
+    }
+
+    #right-top {
+        width: 250px;
+        height: 90px;
+        margin-left: 75px;
+        margin-top: 100px;
+        background-color: white;
+        border: 2px solid black;
+        border-radius: 10px;
+        padding: 3px;
+      
+    }
+      
+    #right-dow {
+        margin-left: 75px;
+        margin-top: 5px;
+        background-color: white;
+        width: 250px;
+        height: 305px;
+        border: 2px solid black;
+        border-radius: 10px;
+        padding: 3px;
+    }
+      .userProfile{
+        width: 70%;
+        padding: 15px;
+        }
+
+        #userpic{
+          float: left;
+          width: 40%;
+          margin-right: -15px;
+        }
+        
+        #profilepic {
+          float: center;
+          margin-left: 0px;
+          
+        }
+        
+        #profileName{
+          width: 50%;
+          float: left;
+          margin-left: -10px;
+          margin-top: 35px;
+        }
+
+        .tabs {
+          width: 100%;
+          height: 100%;
+      }
+        
+      .tabs .button_container {
+          height: 8%;
+          clear: both;
+      }
+        .tabs .button_container .tab_button {
+          width: 20%;
+          height: 100%;
+          float: left;
+          cursor: pointer;
+          padding: 10px;
+          font-size: 14px;
+      }
+        #personal_info {
+          width: 25%;
+          height: 100%;
+          float: left;
+          text-align: left;
+      }
+
+      #personal_info_2 {
+        width: 25%;
+        height: 100%;
+        float: left;
+        text-align: left;
+    }
+        
+      #wall {
+          width: 75%;
+          height: 100%;
+          float: right;
+          text-align: left;
+          margin-top: -490px;
+        
+      }
+
+      #wall_2 {
+        width: 75%;
+        height: 100%;
+        float: right;
+        text-align: left;
+        margin-top: -280px;
+      
+    }
+
+    #refresh_wall_2 {
+      float: right;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      margin-right: 0px;
+    }
+
+    
+}
+
+@media only screen and (min-width: 1288px) {
+  /* For desktops: */
+  .col-1 {width: 8.33%;}
+  .col-2 {width: 16.66%;}
+  .col-3 {width: 25%;}
+  .col-4 {width: 33.33%;}
+  .col-5 {width: 41.66%;}
+  .col-6 {width: 50%;}
+  .col-7 {width: 58.33%;}
+  .col-8 {width: 66.66%;}
+  .col-9 {width: 75%;}
+  .col-10 {width: 83.33%;}
+  .col-11 {width: 91.66%;}
+  .col-12 {width: 100%;}
+
+  #main-left {
+      width: 340px;
+      height: 400px;
+      margin-left: -20px;
+      margin-top: 100px;
+      background-image: url("../images/wimage.png");
+      border: 2px solid black;
+      border-radius: 10px;
+  }
+
+  #right-top {
+      width: 250px;
+      height: 90px;
+      margin-left: 0px;
+      margin-top: 100px;
+      background-color: white;
+      border: 2px solid black;
+      border-radius: 10px;
+      padding: 3px;
+    
+  }
+    
+  #right-dow {
+      margin-left: 0px;
+      margin-top: 5px;
+      background-color: white;
+      width: 250px;
+      height: 305px;
+      border: 2px solid black;
+      border-radius: 10px;
+      padding: 3px;
+  }
+}
+
+@media only screen and (min-width: 1360px) {
+  /* For desktops: */
+  .col-1 {width: 8.33%;}
+  .col-2 {width: 16.66%;}
+  .col-3 {width: 25%;}
+  .col-4 {width: 33.33%;}
+  .col-5 {width: 41.66%;}
+  .col-6 {width: 50%;}
+  .col-7 {width: 58.33%;}
+  .col-8 {width: 66.66%;}
+  .col-9 {width: 75%;}
+  .col-10 {width: 83.33%;}
+  .col-11 {width: 91.66%;}
+  .col-12 {width: 100%;}
+
+  #main-left {
+      width: 340px;
+      height: 400px;
+      margin-left: -15px;
+      margin-top: 100px;
+      background-image: url("../images/wimage.png");
+      border: 2px solid black;
+      border-radius: 10px;
+  }
+
+  #right-top {
+      width: 250px;
+      height: 90px;
+      margin-left: -10px;
+      margin-top: 100px;
+      background-color: white;
+      border: 2px solid black;
+      border-radius: 10px;
+      padding: 3px;
+    
+  }
+    
+  #right-dow {
+      margin-left: -10px;
+      margin-top: 5px;
+      background-color: white;
+      width: 250px;
+      height: 305px;
+      border: 2px solid black;
+      border-radius: 10px;
+      padding: 3px;
+  }
+}
+
+
+@media only screen and (min-width: 1560px) {
+  /* For desktops: */
+  .col-1 {width: 8.33%;}
+  .col-2 {width: 16.66%;}
+  .col-3 {width: 25%;}
+  .col-4 {width: 33.33%;}
+  .col-5 {width: 41.66%;}
+  .col-6 {width: 50%;}
+  .col-7 {width: 58.33%;}
+  .col-8 {width: 66.66%;}
+  .col-9 {width: 75%;}
+  .col-10 {width: 83.33%;}
+  .col-11 {width: 91.66%;}
+  .col-12 {width: 100%;}
+
+  #main-left {
+      width: 340px;
+      height: 400px;
+      margin-left: 120px;
+      margin-top: 100px;
+      background-image: url("../images/wimage.png");
+      border: 2px solid black;
+      border-radius: 10px;
+  }
+
+  #right-top {
+      width: 250px;
+      height: 90px;
+      margin-left: -15px;
+      margin-top: 100px;
+      background-color: white;
+      border: 2px solid black;
+      border-radius: 10px;
+      padding: 3px;
+    
+  }
+    
+  #right-dow {
+      margin-left: -15px;
+      margin-top: 5px;
+      background-color: white;
+      width: 250px;
+      height: 305px;
+      border: 2px solid black;
+      border-radius: 10px;
+      padding: 3px;
+  }
 }
