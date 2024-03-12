@@ -1,5 +1,7 @@
 var exampleSocket;
 var liveuserSocket;
+var public_key;
+
 displayView = function () {
   token = localStorage.getItem("loginusertocken");
   if (token) {
@@ -13,9 +15,26 @@ displayView = function () {
 
 
 window.onload = function () {
-  displayView();
-};
 
+  var req = new XMLHttpRequest();
+  var url = "/get_publickey";
+ 
+  req.open("GET", url, true);
+  req.setRequestHeader("Content-type", "application/json");
+  req.send();
+
+  req.onload = function () {
+    if (this.readyState == 4) {
+      var res_data = JSON.parse(this.response);
+      if (this.status == 200 && res_data.success == "true") {
+        public_key = res_data.data;
+        importRSAPublicKey(res_data.data).then(publicKey => {  public_key = publicKey});
+        //console.log("public_key",public_key);
+      }
+    }
+  }
+  displayView();
+}
 
 
 function checkpw(id1, id2, message_id, button) {
@@ -30,33 +49,42 @@ function checkpw(id1, id2, message_id, button) {
 }
 
 
+
 function login(formdata) {
   var email = formdata.login_email.value;
   var password = formdata.login_password.value;
   var req = new XMLHttpRequest();
   var url = "/sign_in";
-  var send = { username: email, password: password }
-  req.open("POST", url, true);
-  req.setRequestHeader("Content-type", "application/json");
-  req.send(JSON.stringify(send));
+  var send_data = { username: email, password: password }
+  var enc_send = encryptData(JSON.stringify(send_data));
+    enc_send.then(encryptedData =>{
+    console.log(encryptedData);
+    req.open("POST", url, true);
+    //req.setRequestHeader("Content-type", "application/json");
 
-  req.onload = function () {
-    if (this.readyState == 4) {
-      var res_data = JSON.parse(this.response);
-      if (res_data.success == "true" && this.status == 200) {
-        localStorage.setItem("loginusertocken", res_data.data)
-        document.getElementById('content').innerHTML = document.getElementById('logged_in').innerHTML;
-        element = document.getElementById("tabs1");
-        display_tab(element);
-        set_user_data();
-        read_wall();
-        makeWebSocket(email);
+    const formData = new FormData();
+    formData.append('encryptedData', encryptedData);
 
-      } else {
-        popupErrorMsg(this.status, res_data.message)
+    req.send(formData);
+
+    req.onload = function () {
+      if (this.readyState == 4) {
+        var res_data = JSON.parse(this.response);
+        if (res_data.success == "true" && this.status == 200) {
+          localStorage.setItem("loginusertocken", res_data.data)
+          document.getElementById('content').innerHTML = document.getElementById('logged_in').innerHTML;
+          element = document.getElementById("tabs1");
+          display_tab(element);
+          set_user_data();
+          read_wall();
+          makeWebSocket(email);
+
+        } else {
+          popupErrorMsg(this.status, res_data.message)
+        }
       }
-    }
-  };
+    };
+  });
 }
 
 
@@ -131,8 +159,12 @@ function saveContact(formData) {
     var req = new XMLHttpRequest();
     var url = "/sign_up";
     req.open("POST", url, true);
-    req.setRequestHeader("Content-type", "application/json");
-    req.send(JSON.stringify(contact));
+    // req.setRequestHeader("Content-type", "application/json");
+    var enc_send = encryptData(JSON.stringify(contact));
+    enc_send.then(encryptedData =>{
+    const formData = new FormData();
+    formData.append('encryptedData', encryptedData);
+    req.send(formData);
 
     req.onload = function () {
       var res_data = JSON.parse(this.response);
@@ -150,7 +182,7 @@ function saveContact(formData) {
         // document.getElementById('message').style.color = 'red';
       }
     };
-
+  });
   } else {
     document.getElementById('message').innerHTML = "Please fill mandatory data.";
     document.getElementById('message').style.color = 'red';
@@ -174,6 +206,12 @@ var already_login = function () {
   req.setRequestHeader("Content-type", "application/json");
   req.setRequestHeader("Authorization", token);
   req.send();
+  // var send_data={Authorization : token}
+  // var enc_send = encryptData(JSON.stringify(token));
+  // enc_send.then(encryptedData =>{
+  // const formData = new FormData();
+  // formData.append('encryptedData', encryptedData);
+  // req.send(formData);
 
   req.onload = function () {
     if (this.readyState == 4) {
@@ -203,13 +241,12 @@ var already_login = function () {
       }
     }
   };
-
+// });
 }
 
 
 
 var display_tab = function (element) {
-  getNumberofOnlineUsers();
   var tab_panels = document.getElementsByClassName('tab_panel');
   for (var i = 0; i < tab_panels.length; i++) {
     tab_panels[i].style.display = 'none';
@@ -240,6 +277,7 @@ var display_tab = function (element) {
   }
   localStorage.setItem("currentTab", element.id);
   document.getElementById(tabContentIdToShow).style.display = 'block';
+  getNumberofOnlineUsers();
 }
 
 
@@ -273,14 +311,20 @@ var changing_password = function () {
   token = localStorage.getItem("loginusertocken");
   old_PSW = document.getElementById("change_old_psw").value;
   new_PSW = document.getElementById("change_new_psw").value;
-  var send = { oldpassword: old_PSW, newpassword: new_PSW }
+  var send = { oldpassword: old_PSW, newpassword: new_PSW,Authorization:token}
   // var msg = serverstub.changePassword(token,old_PSW,new_PSW);
   var req = new XMLHttpRequest();
   var url = "/change_password";
   req.open("PUT", url, true);
-  req.setRequestHeader("Content-type", "application/json");
-  req.setRequestHeader('Authorization', token);
-  req.send(JSON.stringify(send));
+  // req.setRequestHeader("Content-type", "application/json");
+  // req.setRequestHeader('Authorization', token);
+  // req.send(JSON.stringify(send));
+  var enc_send = encryptData(JSON.stringify(send));
+  enc_send.then(encryptedData =>{
+  // req.send(JSON.stringify(contact));
+  const formData = new FormData();
+  formData.append('encryptedData', encryptedData);
+  req.send(formData);
 
   req.onload = function () {
     var res_data = JSON.parse(this.response);
@@ -302,6 +346,7 @@ var changing_password = function () {
     //   document.getElementById('span_test_4').style.color="red";
     // }
   };
+});
 }
 
 
@@ -414,12 +459,18 @@ var post_to_wall = function (status = false) {
     // var wall_data = serverstub.postMessage(token, message, email);
     var req = new XMLHttpRequest();
     var url = "/post_message";
-    var send = { message: message }
+    var send = { message: message,Authorization: token}
     req.open("POST", url, true);
-    req.setRequestHeader("Content-type", "application/json");
-    req.setRequestHeader("Authorization", token);
-    req.send(JSON.stringify(send));
+    // req.setRequestHeader("Content-type", "application/json");
+    // req.setRequestHeader("Authorization", token);
+    // req.send(JSON.stringify(send));
+    var enc_send = encryptData(JSON.stringify(send));
+    enc_send.then(encryptedData =>{
+    req.open("POST", url, true);
+    const formData = new FormData();
+    formData.append('encryptedData', encryptedData);
 
+    req.send(formData);
     req.onload = function () {
       var res_data = JSON.parse(this.response);
       if (this.readyState == 4) {
@@ -437,7 +488,8 @@ var post_to_wall = function (status = false) {
       //   document.getElementById('wall-post-error-1').style.color="red";
       // }
 
-    }
+    };
+  });
   }
 }
 
@@ -487,11 +539,17 @@ var post_to_wall_2 = function () {
     if (message != "") {
       var req = new XMLHttpRequest();
       var url = "/post_message";
-      var send = { email: email, message: message }
+      var send = { email: email, message: message,Authorization:token }
       req.open("POST", url, true);
-      req.setRequestHeader("Content-type", "application/json");
-      req.setRequestHeader("Authorization", token);
-      req.send(JSON.stringify(send));
+      // req.setRequestHeader("Content-type", "application/json");
+      // req.setRequestHeader("Authorization", token);
+      // req.send(JSON.stringify(send));
+      var enc_send = encryptData(JSON.stringify(send));
+      enc_send.then(encryptedData =>{
+      req.open("POST", url, true);
+      const formData = new FormData();
+      formData.append('encryptedData', encryptedData);
+      req.send(formData);
 
       req.onload = function () {
         var res_data = JSON.parse(this.response);
@@ -510,6 +568,7 @@ var post_to_wall_2 = function () {
           // document.getElementById('wall-post-error').style.color="red";
         }
       }
+    });
     } else {
       document.getElementById("wall-post-error").innerHTML = "Please type a message.";
       document.getElementById('wall-post-error').style.color = "red";
@@ -621,38 +680,43 @@ function getViews() {
         loadchart1(totalviews);
       } else {
         console.log(res_data.message)
-        return [0, 0, 0];
+        loadchart1(false);
       }
     } else {
       console.log(this.message)
       // document.getElementById("personal-error-msg").innerHTML = this.message;
-      return [0, 0, 0];
+      loadchart1(false);
     }
   }
 }
 
 let chart1;
 function loadchart1(data) {
-  const ctx = document.getElementById('myChart').getContext("2d");
-  if (chart1) chart1.destroy();
-  chart1 = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['This Month', 'This Week', 'ToDay'],
-      datasets: [{
-        label: 'Number of Profile Views',
-        data: data,
-        borderWidth: 1
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
+  if(data){
+    const ctx = document.getElementById('myChart').getContext("2d");
+    if (chart1) chart1.destroy();
+    chart1 = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['This Month', 'This Week', 'ToDay'],
+        datasets: [{
+          label: 'Number of Profile Views',
+          data: data,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
         }
       }
-    }
-  });
+    });
+  }else{
+    document.getElementById("noof_prof_views").innerHTML="You'r profile does not have views."
+  }
+
 }
 
 function getMessageCount() {
@@ -686,9 +750,11 @@ function getMessageCount() {
           chart2(counts);
         } else {
           console.log(res_data.message);
+          chart2(false);
         }
       } else {
         console.log(res_data.message);
+        chart2(false);
       }
     }
   };
@@ -696,31 +762,42 @@ function getMessageCount() {
 
 let chart;
 function chart2(counts) {
-  const ctx2 = document.getElementById('myChart2').getContext("2d");
-  if (chart) chart.destroy();
-  chart = new Chart(ctx2, {
-    type: 'pie',
-    data: {
-      labels: Object.keys(counts),
-      datasets: [{
-        label: 'Number of Post',
-        data: Object.values(counts)
-      }]
-    },
-    options: {
-      maintainAspectRatio: false,
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-        title: {
-          display: true,
-          text: 'Post Summery of Wall'
+  let ctx2=null;
+  if(counts){
+    if(document.getElementById('myChart2')){
+      ctx2 = document.getElementById('myChart2').getContext("2d");
+      if (chart) chart.destroy();
+    }
+  if(ctx2 != null){
+    chart = new Chart(ctx2, {
+      type: 'pie',
+      data: {
+        labels: Object.keys(counts),
+        datasets: [{
+          label: 'Number of Post',
+          data: Object.values(counts)
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Post Summery of Wall'
+          }
         }
       }
-    }
-  });
+    });
+  }
+
+  }else{
+    document.getElementById("noof_prof_views2").innerHTML="You'r profile does not have post."
+  }
+
 }
 
 function getNumberofOnlineUsers() {
@@ -740,12 +817,62 @@ function getNumberofOnlineUsers() {
         localStorage.setItem("livecount", res_data.data);
         document.getElementById('online_users').innerHTML = 'Online Users :' + res_data.data;
       } else {
-        document.getElementById('online_users').innerHTML = 'Online Users : 0';
+        c = localStorage.getItem("livecount");
+        document.getElementById('online_users').innerHTML = 'Online Users :'+c;
         console.log(res_data.message);
       }
     } else {
-      document.getElementById('online_users').innerHTML = 'Online Users :0';
+      c = localStorage.getItem("livecount");
+      document.getElementById('online_users').innerHTML = 'Online Users : '+c;
       console.log(res_data.message);
     }
   };
+}
+
+async function importRSAPublicKey(pemKey) {
+    // Remove PEM header and footer
+    const publicKeyPEM = pemKey
+    .replace('-----BEGIN PUBLIC KEY-----', '')
+    .replace('-----END PUBLIC KEY-----', '')
+    .trim();
+
+  // Convert PEM-encoded key to binary
+  const binaryDerString = atob(publicKeyPEM);
+
+  // Convert binary to ArrayBuffer
+  const publicKeyBuffer = new Uint8Array(binaryDerString.length);
+  for (let i = 0; i < binaryDerString.length; ++i) {
+    publicKeyBuffer[i] = binaryDerString.charCodeAt(i);
+  }
+
+  // Import RSA public key
+  const publicKey = await crypto.subtle.importKey(
+    "spki",
+    publicKeyBuffer.buffer,
+    { name: "RSA-OAEP", hash: { name: "SHA-256" } },
+    true,
+    ["encrypt"]
+  );
+
+  return publicKey;
+}
+
+
+async function encryptData(data) {
+  // Convert data to ArrayBuffer
+  const encoder = new TextEncoder();
+  const dataBuffer = encoder.encode(data);
+
+  // Encrypt data using RSA public key
+  const encryptedBuffer = await crypto.subtle.encrypt(
+      { name: "RSA-OAEP" },
+      public_key,
+      dataBuffer
+  );
+
+  // Convert encrypted data to base64-encoded string
+  const encryptedBase64 = btoa(String.fromCharCode(...new Uint8Array(encryptedBuffer)));
+
+  return encryptedBase64;
+
 }
