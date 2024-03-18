@@ -156,7 +156,11 @@ def sign_in():
             for client in clients:
                 wb_socket1=clients.get(client)
                 if(wb_socket1 is not None):
-                    wb_socket1.send("1")
+                    try:
+                        wb_socket1.send("1")
+                    except RuntimeError as err:
+                        print("Connection is Closed",err) 
+                    
 
             print("After Login",result)
             if (result):                   
@@ -211,7 +215,10 @@ def sign_out():
             for client in clients:
                 wb_socketso=clients.get(client)
                 if wb_socketso is not None:
-                    wb_socketso.send("0")
+                    try:
+                        wb_socketso.send("0")
+                    except RuntimeError as err:
+                        print("Connection is Closed",err)
             return jsonify({"success": "true","message":"Successfully signed out."}), 200
         else:
             return jsonify({"success": "false", "message": "servererror"}), 500

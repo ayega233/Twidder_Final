@@ -104,11 +104,13 @@ function makeWebSocket(email) {
         if (event.data == 1) {
           c = localStorage.getItem("livecount");
           livecount = ++c;
+          localStorage.setItem("livecount", livecount);
           document.getElementById('online_users').innerHTML = 'Online Users :' + livecount;
         } else {
           c = localStorage.getItem("livecount");
-          livecount = --c;
-          document.getElementById('online_users').innerHTML = 'Online Users :' + livecount;
+          livecount1 = --c;
+          localStorage.setItem("livecount", livecount1);
+          document.getElementById('online_users').innerHTML = 'Online Users :' + livecount1;
         }
       }
 
